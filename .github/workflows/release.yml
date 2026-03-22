@@ -1,0 +1,197 @@
+name: Release
+
+# ─────────────────────────────────────────────────────────────────
+# Go to GitHub → Actions → Release → Run workflow
+# Enter the version (e.g. 1.2.0) and click Run.
+#
+# This workflow will:
+#   1. Bump versions in package.json, tauri.conf.json, Cargo.toml
+#   2. Commit, tag (v<version>), and push
+#   3. Build for macOS / Windows / Linux → publish GitHub Release
+# ─────────────────────────────────────────────────────────────────
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release (semver, e.g. 1.2.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────
+  # Job 1 — Bump all version files, commit, tag, push
+  # ─────────────────────────────────────────────────────────────────
+  version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.bump.outputs.tag }}
+      version: ${{ steps.bump.outputs.version }}
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate version
+        id: bump
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          VERSION="${VERSION#v}"
+
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Not valid semver: $VERSION"
+            exit 1
+          fi
+
+          TAG="v${VERSION}"
+
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "::error::Tag $TAG already exists"
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG"         >> "$GITHUB_OUTPUT"
+
+      - name: Bump versions with bumpp
+        run: |
+          npx bumpp@latest ${{ steps.bump.outputs.version }} \
+            --yes \
+            --no-commit \
+            --no-tag \
+            --no-push \
+            --files src-tauri/tauri.conf.json src-tauri/Cargo.toml
+
+      - name: Update Cargo.lock
+        run: |
+          cd src-tauri
+          # Install minimal Rust just to update the lockfile
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal
+          source "$HOME/.cargo/env"
+          cargo generate-lockfile
+
+      - name: Commit, tag, and push
+        run: |
+          TAG="${{ steps.bump.outputs.tag }}"
+          git add package.json src-tauri/tauri.conf.json src-tauri/Cargo.toml src-tauri/Cargo.lock
+          git commit -m "chore: release $TAG"
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin HEAD --follow-tags
+
+  # ─────────────────────────────────────────────────────────────────
+  # Job 2 — Build all platforms → GitHub Release
+  # ─────────────────────────────────────────────────────────────────
+  release:
+    needs: version
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos-latest
+            args: --target aarch64-apple-darwin
+            rust_target: aarch64-apple-darwin
+          - platform: macos-latest
+            args: --target x86_64-apple-darwin
+            rust_target: x86_64-apple-darwin
+          - platform: windows-latest
+            args: ""
+            rust_target: ""
+          - platform: ubuntu-22.04
+            args: ""
+            rust_target: ""
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.version.outputs.tag }}
+
+      - name: Install Linux dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libdbus-1-dev pkg-config
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install frontend dependencies
+        run: pnpm install
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust_target }}
+
+      - name: Cache Cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            src-tauri/target
+          key: ${{ runner.os }}-cargo-${{ matrix.rust_target }}-${{ hashFiles('src-tauri/Cargo.lock') }}
+
+      - name: Build and release
+        uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # macOS code signing (optional — set these secrets to enable)
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          # macOS notarization (optional)
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        with:
+          tagName: ${{ needs.version.outputs.tag }}
+          releaseName: "Inkognito ${{ needs.version.outputs.tag }}"
+          releaseBody: |
+            ## Inkognito ${{ needs.version.outputs.tag }}
+
+            | Platform | Download |
+            |---|---|
+            | macOS Apple Silicon | `Inkognito_*_aarch64.dmg` |
+            | macOS Intel | `Inkognito_*_x64.dmg` |
+            | Windows | `Inkognito_*_x64-setup.exe` / `.msi` |
+            | Linux | `inkognito_*.deb` / `.AppImage` |
+          releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.args }}
