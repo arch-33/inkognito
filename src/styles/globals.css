@@ -1,0 +1,66 @@
+@import "tailwindcss";
+@import "highlight.js/styles/github.css" layer(base);
+@import "highlight.js/styles/github-dark.css" layer(base) (prefers-color-scheme: dark);
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@theme inline {
+  --radius: 0.5rem;
+  --color-background: hsl(0 0% 100%);
+  --color-foreground: hsl(0 0% 9%);
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(0 0% 9%);
+  --color-primary: hsl(221 83% 53%);
+  --color-primary-foreground: hsl(0 0% 100%);
+  --color-secondary: hsl(0 0% 96%);
+  --color-secondary-foreground: hsl(0 0% 9%);
+  --color-muted: hsl(0 0% 96%);
+  --color-muted-foreground: hsl(0 0% 45%);
+  --color-accent: hsl(0 0% 96%);
+  --color-accent-foreground: hsl(0 0% 9%);
+  --color-destructive: hsl(0 84% 60%);
+  --color-border: hsl(0 0% 90%);
+  --color-input: hsl(0 0% 90%);
+  --color-ring: hsl(221 83% 53%);
+}
+
+[data-theme=dark] {
+  --color-background: hsl(0 0% 4%);
+  --color-foreground: hsl(0 0% 88%);
+  --color-card: hsl(0 0% 7%);
+  --color-card-foreground: hsl(0 0% 88%);
+  --color-primary: hsl(221 83% 53%);
+  --color-primary-foreground: hsl(0 0% 100%);
+  --color-secondary: hsl(0 0% 15%);
+  --color-secondary-foreground: hsl(0 0% 88%);
+  --color-muted: hsl(0 0% 15%);
+  --color-muted-foreground: hsl(0 0% 64%);
+  --color-accent: hsl(0 0% 15%);
+  --color-accent-foreground: hsl(0 0% 88%);
+  --color-destructive: hsl(0 62% 30%);
+  --color-border: hsl(0 0% 15%);
+  --color-input: hsl(0 0% 15%);
+  --color-ring: hsl(221 83% 53%);
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; width: 100%; margin: 0; padding: 0; }
+body { font-family: 'Instrument Sans', sans-serif; -webkit-font-smoothing: antialiased; overflow: hidden; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 2px; }
+
+/* Editor background patterns */
+.editor-bg-dots {
+  background-image: radial-gradient(circle, rgba(0,0,0,0.07) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+[data-color-mode="dark"] .editor-bg-dots {
+  background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+}
+.editor-bg-dots .cm-editor,
+.editor-bg-dots .cm-scroller,
+.editor-bg-dots .cm-gutters,
+.editor-bg-dots .cm-activeLineGutter {
+  background-color: transparent !important;
+}

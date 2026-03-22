@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "veilnotes",
+  "productName": "Inkognito",
   "version": "0.1.0",
-  "identifier": "dev.arch-33.veilnotes",
+  "identifier": "dev.arch-33.inkognito",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "devUrl": "http://localhost:1420",
@@ -12,14 +12,23 @@
   "app": {
     "windows": [
       {
-        "title": "veilnotes",
+        "label": "main",
+        "title": "Inkognito",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "minWidth": 600,
+        "minHeight": 400,
+        "resizable": true,
+        "contentProtected": true,
+        "decorations": false,
+        "alwaysOnTop": true,
+        "transparent": true
       }
     ],
     "security": {
       "csp": null
-    }
+    },
+    "macOSPrivateApi": true
   },
   "bundle": {
     "active": true,
@@ -30,6 +39,9 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "category": "Productivity",
+    "shortDescription": "A beautiful note-taking app",
+    "longDescription": "A beautiful, minimalistic note-taking app."
   }
 }
