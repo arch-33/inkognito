@@ -49,6 +49,7 @@ Most note apps sync your data to someone else's server. Inkognito doesn't. Every
 - **Full-text search** across your entire library
 
 ### Thoughtful Details
+- **Minimize to tray** — close the window and Inkognito keeps running quietly in your system tray
 - **Always-on-top** floating window — pin Inkognito above other apps
 - **Adjustable window opacity** — blend into your workflow
 - **Custom keyboard shortcuts** — recordable, fully remappable
