@@ -2,7 +2,7 @@
   "name": "inkognito",
   "private": true,
   "author": "arch-33",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
