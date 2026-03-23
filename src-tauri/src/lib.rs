@@ -3,6 +3,38 @@ mod db;
 mod models;
 mod settings_commands;
 
+use tauri::{
+    menu::{Menu, MenuItem},
+    tray::TrayIconBuilder,
+    Manager,
+};
+
+/// Show the main window and restore it in the app switcher (Cmd+Tab / Alt+Tab).
+fn show_window(app: &tauri::AppHandle) {
+    if let Some(window) = app.get_webview_window("main") {
+        #[cfg(target_os = "macos")]
+        let _ = app.set_activation_policy(tauri::ActivationPolicy::Regular);
+
+        #[cfg(not(target_os = "macos"))]
+        let _ = window.set_skip_taskbar(false);
+
+        let _ = window.show();
+        let _ = window.unminimize();
+        let _ = window.set_focus();
+    }
+}
+
+/// Hide the main window and remove it from the app switcher (Cmd+Tab / Alt+Tab).
+fn hide_window(window: &tauri::Window) {
+    let _ = window.hide();
+
+    #[cfg(target_os = "macos")]
+    let _ = window.app_handle().set_activation_policy(tauri::ActivationPolicy::Accessory);
+
+    #[cfg(not(target_os = "macos"))]
+    let _ = window.set_skip_taskbar(true);
+}
+
 #[tauri::command]
 fn set_content_protection(window: tauri::Window, enabled: bool) -> Result<(), String> {
     window.set_content_protected(enabled).map_err(|e| e.to_string())
@@ -17,7 +49,7 @@ pub fn run() {
             None,
         ))
         .setup(|app| {
-            use tauri::Manager;
+            // Database
             let db_path = app
                 .path()
                 .app_data_dir()
@@ -25,7 +57,35 @@ pub fn run() {
                 .join("inkognito.db");
             let database = db::init_db(&db_path).expect("failed to initialize database");
             app.manage(database);
+
+            // System tray
+            let show = MenuItem::with_id(app, "show", "Show Inkognito", true, None::<&str>)?;
+            let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
+            let menu = Menu::with_items(app, &[&show, &quit])?;
+
+            TrayIconBuilder::new()
+                .icon(app.default_window_icon().unwrap().clone())
+                .tooltip("Inkognito")
+                .menu(&menu)
+                .on_menu_event(|app, event| match event.id.as_ref() {
+                    "show" => show_window(app),
+                    "quit" => app.exit(0),
+                    _ => {}
+                })
+                .on_tray_icon_event(|tray, event| {
+                    if let tauri::tray::TrayIconEvent::Click { .. } = event {
+                        show_window(tray.app_handle());
+                    }
+                })
+                .build(app)?;
+
             Ok(())
+        })
+        .on_window_event(|window, event| {
+            if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+                api.prevent_close();
+                hide_window(window);
+            }
         })
         .invoke_handler(tauri::generate_handler![
             set_content_protection,
