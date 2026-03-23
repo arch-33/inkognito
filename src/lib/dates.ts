@@ -1,4 +1,4 @@
-import { format, parse, isSameDay as fnsIsSameDay, eachDayOfInterval, startOfMonth, endOfMonth } from 'date-fns'
+import { format, parse, isSameDay as fnsIsSameDay, eachDayOfInterval, startOfMonth, endOfMonth, formatDistanceToNow } from 'date-fns'
 
 export function getTodayISO(): string {
   return format(new Date(), 'yyyy-MM-dd')
@@ -18,6 +18,10 @@ export function getDaysInMonth(year: number, month: number): Date[] {
   const start = startOfMonth(new Date(year, month))
   const end = endOfMonth(new Date(year, month))
   return eachDayOfInterval({ start, end })
+}
+
+export function formatLastUpdated(timestamp: string): string {
+  return formatDistanceToNow(new Date(timestamp), { addSuffix: true })
 }
 
 export function isSameDay(a: string, b: string): boolean {

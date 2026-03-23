@@ -1,5 +1,5 @@
-import { formatShort } from '@/lib/dates'
-import { getWordCount, getNoteTitle } from '@/lib/notes'
+import { formatShort, formatLastUpdated } from '@/lib/dates'
+import {  getNoteTitle } from '@/lib/notes'
 import type { NoteEntry } from '@/types'
 
 type NoteListItemProps = {
@@ -20,7 +20,7 @@ export default function NoteListItem({ entry, onClick, showTags = false }: NoteL
       <span className="text-[12px] text-neutral-500 truncate flex-1">
         {getNoteTitle(entry.content)}
       </span>
-      <span className="text-[10px] text-neutral-400">{getWordCount(entry.content)}w</span>
+      <span className="text-[10px] text-neutral-400">{formatLastUpdated(entry.updatedAt)}</span>
       {showTags && entry.tags.map((tag) => (
         <span
           key={tag}
