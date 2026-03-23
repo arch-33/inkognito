@@ -1,0 +1,98 @@
+name: Update Homebrew Cask
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  update-cask:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: arch-33/homebrew-tap
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+
+      - name: Download DMGs and compute hashes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ github.event.release.tag_name }}
+        run: |
+          VERSION="${VERSION#v}"
+          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
+
+          gh release download "v${VERSION}" \
+            --repo arch-33/inkognito \
+            --pattern "*.dmg" \
+            --dir /tmp/assets
+
+          echo "ARM64_SHA=$(shasum -a 256 /tmp/assets/*aarch64*.dmg | awk '{print $1}')" >> "$GITHUB_ENV"
+          echo "X64_SHA=$(shasum -a 256 /tmp/assets/*x64*.dmg | awk '{print $1}')" >> "$GITHUB_ENV"
+
+      - name: Pin previous version
+        run: |
+          if [ -f Casks/inkognito.rb ]; then
+            OLD_VERSION=$(grep -m1 'version "' Casks/inkognito.rb | sed 's/.*version "//;s/"//')
+            if [ -n "$OLD_VERSION" ] && [ "$OLD_VERSION" != "$VERSION" ]; then
+              cp Casks/inkognito.rb "Casks/inkognito@${OLD_VERSION}.rb"
+              # Update the cask name inside the pinned file to include the version
+              sed -i '' "s/cask \"inkognito\"/cask \"inkognito@${OLD_VERSION}\"/" "Casks/inkognito@${OLD_VERSION}.rb"
+              # Remove livecheck block from pinned version (not needed)
+              sed -i '' '/livecheck do/,/^  end$/d' "Casks/inkognito@${OLD_VERSION}.rb"
+            fi
+          fi
+
+      - name: Write Cask formula
+        shell: ruby {0}
+        run: |
+          v   = ENV["VERSION"]
+          arm = ENV["ARM64_SHA"]
+          x64 = ENV["X64_SHA"]
+
+          File.write("Casks/inkognito.rb", <<~CASK)
+            cask "inkognito" do
+              version "#{v}"
+
+              on_arm do
+                url "https://github.com/arch-33/inkognito/releases/download/v\#{version}/Inkognito_\#{version}_aarch64.dmg"
+                sha256 "#{arm}"
+              end
+
+              on_intel do
+                url "https://github.com/arch-33/inkognito/releases/download/v\#{version}/Inkognito_\#{version}_x64.dmg"
+                sha256 "#{x64}"
+              end
+
+              name "Inkognito"
+              desc "Privacy-focused markdown notepad with screen capture protection"
+              homepage "https://inkognito.dev"
+
+              livecheck do
+                url "https://github.com/arch-33/inkognito/releases/latest"
+                strategy :github_latest
+              end
+
+              depends_on macos: ">= :catalina"
+
+              app "Inkognito.app"
+
+              postflight do
+                system "xattr", "-dr", "com.apple.quarantine", "\#{appdir}/Inkognito.app"
+              end
+
+              zap trash: [
+                "~/Library/Application Support/dev.arch-33.inkognito",
+                "~/Library/Caches/dev.arch-33.inkognito",
+                "~/Library/Preferences/dev.arch-33.inkognito.plist",
+              ]
+            end
+          CASK
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Casks/
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "Update inkognito to ${VERSION}"
+          git push
