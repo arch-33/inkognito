@@ -65,7 +65,7 @@ jobs:
 
               name "Inkognito"
               desc "Privacy-focused markdown notepad with screen capture protection"
-              homepage "https://inkognito.dev"
+              homepage "https://arch-33.github.io/inkognito/"
 
               livecheck do
                 url "https://github.com/arch-33/inkognito/releases/latest"
