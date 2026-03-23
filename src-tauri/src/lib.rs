@@ -64,7 +64,9 @@ pub fn run() {
             let menu = Menu::with_items(app, &[&show, &quit])?;
 
             TrayIconBuilder::new()
-                .icon(app.default_window_icon().unwrap().clone())
+                .icon(tauri::image::Image::from_bytes(
+                    include_bytes!("../icons/tray-icon.png"),
+                )?)
                 .tooltip("Inkognito")
                 .menu(&menu)
                 .on_menu_event(|app, event| match event.id.as_ref() {
