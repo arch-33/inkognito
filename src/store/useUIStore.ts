@@ -3,6 +3,7 @@ import { merge } from 'es-toolkit'
 import { AppSettings, SidebarView } from '@/types'
 import { invoke } from '@tauri-apps/api/core'
 import { getCurrentWindow } from '@tauri-apps/api/window'
+import { isLinux } from '@/lib/utils'
 
 type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P]
@@ -93,9 +94,11 @@ export const useUIStore = create<UIStore>((set, get) => ({
       })
 
       // Apply loaded settings to the actual window
-      invoke('set_content_protection', { enabled: settings.privacy.contentProtection }).catch((e) =>
-        console.warn('[set_content_protection]', e),
-      )
+      if (!isLinux) {
+        invoke('set_content_protection', { enabled: settings.privacy.contentProtection }).catch((e) =>
+          console.warn('[set_content_protection]', e),
+        )
+      }
       getCurrentWindow().setAlwaysOnTop(settings.general.alwaysOnTop).catch(() => {})
     } catch (e) {
       console.warn('[ui init]', e)
@@ -140,7 +143,7 @@ export const useUIStore = create<UIStore>((set, get) => ({
       const updates: Record<string, unknown> = { settings: next }
 
       // Sync runtime state & window when relevant settings change
-      if (next.privacy.contentProtection !== state.isProtected) {
+      if (!isLinux && next.privacy.contentProtection !== state.isProtected) {
         updates.isProtected = next.privacy.contentProtection
         invoke('set_content_protection', { enabled: next.privacy.contentProtection }).catch((e) =>
           console.warn('[set_content_protection]', e),

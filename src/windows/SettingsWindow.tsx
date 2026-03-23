@@ -7,6 +7,7 @@ import SelectNative from '@/components/ui/select-native'
 import SettingsRow from '@/components/ui/settings-row'
 import { shortcutActions, shortcutLabels, formatShortcut, eventToShortcut } from '@/lib/shortcuts'
 import type { ShortcutAction } from '@/lib/shortcuts'
+import { isLinux } from '@/lib/utils'
 
 type Section = 'general' | 'appearance' | 'privacy' | 'editor' | 'shortcuts' | 'sync'
 
@@ -72,7 +73,7 @@ export default function SettingsWindow() {
   const sections: { id: Section; label: string }[] = [
     { id: 'general', label: 'General' },
     { id: 'appearance', label: 'Appearance' },
-    { id: 'privacy', label: 'Privacy' },
+    ...(!isLinux ? [{ id: 'privacy' as Section, label: 'Privacy' }] : []),
     { id: 'editor', label: 'Editor' },
     { id: 'shortcuts', label: 'Shortcuts' },
   ]

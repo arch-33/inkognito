@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { Pin, PinOff, ShieldCheck, Settings2, PanelLeft } from 'lucide-react'
 import { useUIStore } from '@/store/useUIStore'
 import { getCurrentWindow } from '@tauri-apps/api/window'
+import { isLinux } from '@/lib/utils'
 import ToolbarButton from '@/components/ui/toolbar-button'
 
 export default function TitleBar() {
@@ -84,14 +85,16 @@ export default function TitleBar() {
           Float
         </ToolbarButton>
 
-        <ToolbarButton
-          active={isProtected}
-          activeClassName="bg-red-500 text-white border-red-500"
-          onClick={toggleProtection}
-        >
-          <ShieldCheck size={12} />
-          Protected
-        </ToolbarButton>
+        {!isLinux && (
+          <ToolbarButton
+            active={isProtected}
+            activeClassName="bg-red-500 text-white border-red-500"
+            onClick={toggleProtection}
+          >
+            <ShieldCheck size={12} />
+            Protected
+          </ToolbarButton>
+        )}
 
         <ToolbarButton active={settingsOpen} onClick={toggleSettings}>
           <Settings2 size={12} />

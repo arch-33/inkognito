@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="src-tauri/icons/128x128@2x.png" width="100" alt="Inkognito" />
+  <img src="assets/inkognito.png" width="100" alt="Inkognito" />
 </p>
 
 <h1 align="center">Inkognito</h1>
@@ -31,8 +31,8 @@ Most note apps sync your data to someone else's server. Inkognito doesn't. Every
 ## Features
 
 ### Privacy First
-- **Content Protection** — one click hides your notes from screen capture, recordings, and screen sharing
-- **Auto-protect on minimize** — your content is automatically shielded when you step away
+- **Content Protection** — one click hides your notes from screen capture, recordings, and screen sharing *(macOS & Windows only)*
+- **Auto-protect on minimize** — your content is automatically shielded when you step away *(macOS & Windows only)*
 - **Zero cloud, zero telemetry** — nothing ever leaves your machine
 
 ### Beautiful Writing Experience
