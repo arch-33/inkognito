@@ -4,8 +4,9 @@ mod models;
 mod settings_commands;
 
 use tauri::{
-    menu::{Menu, MenuItem},
+    menu::{Menu, MenuItem, PredefinedMenuItem},
     tray::TrayIconBuilder,
+    webview::WebviewWindowBuilder,
     Manager,
 };
 
@@ -13,26 +14,42 @@ use tauri::{
 fn show_window(app: &tauri::AppHandle) {
     if let Some(window) = app.get_webview_window("main") {
         #[cfg(target_os = "macos")]
-        let _ = app.set_activation_policy(tauri::ActivationPolicy::Regular);
+        if let Err(e) = app.set_activation_policy(tauri::ActivationPolicy::Regular) {
+            eprintln!("Failed to set activation policy: {e}");
+        }
 
         #[cfg(not(target_os = "macos"))]
-        let _ = window.set_skip_taskbar(false);
+        if let Err(e) = window.set_skip_taskbar(false) {
+            eprintln!("Failed to restore taskbar: {e}");
+        }
 
-        let _ = window.show();
-        let _ = window.unminimize();
-        let _ = window.set_focus();
+        if let Err(e) = window.show() {
+            eprintln!("Failed to show window: {e}");
+        }
+        if let Err(e) = window.unminimize() {
+            eprintln!("Failed to unminimize window: {e}");
+        }
+        if let Err(e) = window.set_focus() {
+            eprintln!("Failed to focus window: {e}");
+        }
     }
 }
 
 /// Hide the main window and remove it from the app switcher (Cmd+Tab / Alt+Tab).
 fn hide_window(window: &tauri::Window) {
-    let _ = window.hide();
+    if let Err(e) = window.hide() {
+        eprintln!("Failed to hide window: {e}");
+    }
 
     #[cfg(target_os = "macos")]
-    let _ = window.app_handle().set_activation_policy(tauri::ActivationPolicy::Accessory);
+    if let Err(e) = window.app_handle().set_activation_policy(tauri::ActivationPolicy::Accessory) {
+        eprintln!("Failed to set activation policy: {e}");
+    }
 
     #[cfg(not(target_os = "macos"))]
-    let _ = window.set_skip_taskbar(true);
+    if let Err(e) = window.set_skip_taskbar(true) {
+        eprintln!("Failed to skip taskbar: {e}");
+    }
 }
 
 #[tauri::command]
@@ -60,8 +77,10 @@ pub fn run() {
 
             // System tray
             let show = MenuItem::with_id(app, "show", "Show Inkognito", true, None::<&str>)?;
+            let about = MenuItem::with_id(app, "about", "About", true, None::<&str>)?;
+            let sep = PredefinedMenuItem::separator(app)?;
             let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
-            let menu = Menu::with_items(app, &[&show, &quit])?;
+            let menu = Menu::with_items(app, &[&show, &about, &sep, &quit])?;
 
             TrayIconBuilder::new()
                 .icon(tauri::image::Image::from_bytes(
@@ -71,6 +90,32 @@ pub fn run() {
                 .menu(&menu)
                 .on_menu_event(|app, event| match event.id.as_ref() {
                     "show" => show_window(app),
+                    "about" => {
+                        if let Some(window) = app.get_webview_window("about") {
+                            if let Err(e) = window.show() {
+                                eprintln!("Failed to show window: {e}");
+                            }
+                            if let Err(e) = window.set_focus() {
+                                eprintln!("Failed to focus window: {e}");
+                            }
+                        } else if let Err(e) = WebviewWindowBuilder::new(
+                            app,
+                            "about",
+                            tauri::WebviewUrl::App("index.html#/about".into()),
+                        )
+                        .title("About Inkognito")
+                        .inner_size(360.0, 340.0)
+                        .resizable(false)
+                        .minimizable(false)
+                        .maximizable(false)
+                        .decorations(false)
+                        .transparent(true)
+                        .center()
+                        .build()
+                        {
+                            eprintln!("Failed to create window: {e}");
+                        }
+                    }
                     "quit" => app.exit(0),
                     _ => {}
                 })
@@ -85,8 +130,10 @@ pub fn run() {
         })
         .on_window_event(|window, event| {
             if let tauri::WindowEvent::CloseRequested { api, .. } = event {
-                api.prevent_close();
-                hide_window(window);
+                if window.label() == "main" {
+                    api.prevent_close();
+                    hide_window(window);
+                }
             }
         })
         .invoke_handler(tauri::generate_handler![
