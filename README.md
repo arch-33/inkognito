@@ -79,6 +79,38 @@ Grab the latest release for your platform:
 | Windows | [`.msi`](https://github.com/arch-33/inkognito/releases/latest) / [`.exe`](https://github.com/arch-33/inkognito/releases/latest) |
 | Linux | [`.deb`](https://github.com/arch-33/inkognito/releases/latest) / [`.AppImage`](https://github.com/arch-33/inkognito/releases/latest) |
 
+### Post-install
+
+<details>
+<summary><strong>macOS — "App is damaged" or unidentified developer warning</strong></summary>
+
+Since Inkognito is not (yet) notarized with Apple, macOS may block it on first launch. Run this once after installing:
+
+```bash
+sudo xattr -dr com.apple.quarantine /Applications/Inkognito.app
+```
+
+</details>
+
+<details>
+<summary><strong>Windows — SmartScreen warning</strong></summary>
+
+Windows may show a "Windows protected your PC" dialog. Click **More info** → **Run anyway**. This happens because the app is not code-signed yet.
+
+</details>
+
+<details>
+<summary><strong>Linux — AppImage permissions</strong></summary>
+
+After downloading the `.AppImage`, make it executable:
+
+```bash
+chmod +x Inkognito_*.AppImage
+./Inkognito_*.AppImage
+```
+
+</details>
+
 ---
 
 ## Keyboard Shortcuts
