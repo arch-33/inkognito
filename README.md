@@ -17,7 +17,10 @@
 </p>
 
 <p align="center">
-  <img src=".github/assets/preview-light.png" width="720" alt="Inkognito screenshot" />
+  <img src="assets/screenshot-edit-mode.png" width="720" alt="Inkognito edit mode screenshot" />
+</p>
+<p align="center">
+  <img src="assets/screenshot-preview-mode.png" width="720" alt="Inkognito preview mode screenshot" />
 </p>
 
 ---
