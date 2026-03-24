@@ -1,0 +1,21 @@
+---
+import { Image } from "astro:assets";
+import logoLight from "../../../public/images/logo-full.png";
+import logoDark from "../../../public/images/logo-full-1.png";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<a href={`${base}/`} class="navbar-brand flex flex-row items-center">
+  <Image
+    src={logoLight}
+    alt="Inkognito"
+    class="h-10 w-auto block dark:hidden"
+    height={40}
+  />
+  <Image
+    src={logoDark}
+    alt="Inkognito"
+    class="h-10 w-auto hidden dark:block"
+    height={40}
+  />
+</a>

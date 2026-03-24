@@ -1,0 +1,153 @@
+---
+import ThemeToggle from "@/components/core/ThemeToggle.astro";
+import menu from "@/config/menu.json";
+
+export interface ChildNavigationLink {
+  name: string;
+  url: string;
+}
+
+export interface NavigationLink {
+  name: string;
+  url: string;
+  hasChildren?: boolean;
+  children?: ChildNavigationLink[];
+}
+
+const { main }: { main: NavigationLink[] } = menu;
+const { pathname } = Astro.url;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const withBase = (url: string) => `${base}/${url}`;
+---
+
+<header class="header">
+  <nav class="navbar container">
+    <!-- logo -->
+    <div class="order-0">
+      <a href={withBase("")} class="navbar-brand text-lg font-bold text-text">Inkognito</a>
+    </div>
+    <!-- navbar toggler -->
+    <input id="nav-toggle" type="checkbox" class="hidden" />
+    <label
+      id="show-button"
+      for="nav-toggle"
+      class="order-2 flex cursor-pointer items-center lg:order-1 lg:hidden mr-6"
+    >
+      <svg class="h-5 w-5 text-neutral-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </label>
+    <label
+      id="hide-button"
+      for="nav-toggle"
+      class="order-2 hidden cursor-pointer items-center lg:order-1 mr-6"
+    >
+      <svg class="h-5 w-5 text-neutral-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </label>
+    <!-- /navbar toggler -->
+
+    <ul
+      id="nav-menu"
+      class="navbar-nav order-3 hidden w-full lg:order-1 lg:flex lg:w-auto lg:space-x-1"
+    >
+      {
+        main.map((menu) => (
+          <>
+            {menu.hasChildren ? (
+              <li class="nav-item nav-dropdown group relative cursor-pointer dropdown-button">
+                <span
+                  class={`nav-link inline-flex items-center ${
+                    menu.children?.map(({ url }) => withBase(url)).includes(pathname) ||
+                    menu.children
+                      ?.map(({ url }) => `${withBase(url)}/`)
+                      .includes(pathname)
+                      ? "active"
+                      : ""
+                  }`}
+                >
+                  {menu.name}
+                  <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20">
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                  </svg>
+                </span>
+                <ul
+                  id="dropdown"
+                  class="nav-dropdown-list"
+                >
+                  {menu.children?.map((child) => (
+                    <li class="nav-dropdown-item">
+                      <a
+                        href={withBase(child.url)}
+                        class={`nav-dropdown-link block ${
+                          (pathname === `${withBase(child.url)}/` ||
+                            pathname === withBase(child.url)) &&
+                          "text-secondary"
+                        }`}
+                      >
+                        {child.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ) : (
+              <li class="nav-item">
+                <a
+                  href={withBase(menu.url)}
+                  class={`nav-link inline-block lg:block ${
+                    (pathname === `${withBase(menu.url)}/` || pathname === withBase(menu.url)) &&
+                    "active"
+                  }`}
+                >
+                  {menu.name}
+                </a>
+              </li>
+            )}
+          </>
+        ))
+      }
+    </ul>
+    <div class="order-1 ml-auto flex items-center gap-3 md:order-2 md:ml-0 lg:relative lg:right-0 lg:flex lg:top-0">
+      <ThemeToggle />
+      <a href="https://github.com/arch-33/inkognito" target="_blank" rel="noopener" class="hidden lg:flex items-center gap-2 px-4 py-2 rounded-full bg-black/5 dark:bg-white/10 border border-border text-sm text-text-secondary hover:bg-black/10 dark:hover:bg-white/15 hover:border-black/20 dark:hover:border-white/20 transition-all duration-300">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        Star on GitHub
+      </a>
+    </div>
+  </nav>
+</header>
+
+<script is:inline>
+  function initHeader() {
+    var header = document.querySelector(".header");
+    if (!header) return;
+
+    function onScroll() {
+      if (window.scrollY > 50) {
+        header.classList.add("scrolled");
+      } else {
+        header.classList.remove("scrolled");
+      }
+    }
+    window.removeEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+
+    document.querySelectorAll(".dropdown-button").forEach(function(button) {
+      var dropdown = button.closest(".nav-dropdown");
+      function toggleDropdown(e) {
+        e.stopPropagation();
+        dropdown.classList.toggle("open");
+        document.querySelectorAll(".nav-dropdown").forEach(function(other) {
+          if (other !== dropdown) other.classList.remove("open");
+        });
+      }
+      button.removeEventListener("click", toggleDropdown);
+      button.addEventListener("click", toggleDropdown);
+    });
+  }
+
+  document.addEventListener("astro:page-load", initHeader);
+</script>

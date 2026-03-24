@@ -1,0 +1,31 @@
+{
+  "main": [
+    {
+      "name": "Home",
+      "url": ""
+    },
+    {
+      "name": "Features",
+      "url": "features"
+    },
+    {
+      "name": "Download",
+      "url": "download"
+    }
+  ],
+
+  "footer": [
+    {
+      "name": "Features",
+      "url": "features"
+    },
+    {
+      "name": "Download",
+      "url": "download"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/arch-33/inkognito"
+    }
+  ]
+}

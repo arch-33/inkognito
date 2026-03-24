@@ -1,0 +1,30 @@
+{
+  "site": {
+    "title": "Inkognito",
+    "base_url": "https://inkognito.dev",
+    "base_path": "/",
+    "trailing_slash": false,
+    "favicon": "/images/favicon.ico",
+    "logo": "/images/logo.png",
+    "logo_width": "40",
+    "logo_height": "40",
+    "logo_text": "Inkognito"
+  },
+
+  "params": {
+    "footer_description": "A private, local-first markdown notepad. Your thoughts deserve privacy.",
+    "email": "",
+    "location": "",
+    "phone": "",
+    "contact_form_action": "#",
+    "copyright": "Copyright © 2026 [arch-33](https://github.com/arch-33)"
+  },
+
+  "metadata": {
+    "meta_author": "Mohamed EL MOUSAAIF",
+    "meta_image": "/images/og-image.png",
+    "meta_description": "Inkognito is a private, local-first markdown notepad with screen capture protection. Built with Tauri 2 for macOS, Windows, and Linux.",
+    "meta_keywords": ["inkognito", "notes", "markdown", "privacy", "local-first", "tauri", "notepad", "screen capture protection", "desktop app"],
+    "meta_application_name": "Inkognito"
+  }
+}

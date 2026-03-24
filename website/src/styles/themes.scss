@@ -1,0 +1,54 @@
+
+@use "sass:map";
+@use "sass:color";
+
+@function to_rgba($color, $alpha: 1) {
+    @return "" + color.channel($color, "red") + "," + color.channel($color, "green") + "," + color.channel($color, "blue");
+}
+
+// Inkognito — dark, privacy-focused palette
+$default: (
+    "primary": #6366f1,
+    "secondary": #818cf8,
+    "accent": #a78bfa,
+    "background": #fafafa,
+    "background-contrast": #0a0a0a,
+    "surface": #ffffff,
+    "surface-contrast": #171717,
+    "border": #e5e5e5,
+    "text": #171717,
+    "text-contrast": #fafafa,
+    "text-secondary": #525252,
+    "text-disabled": #a3a3a3,
+    "danger": #ef4444,
+    "success": #22c55e,
+    "warning": #eab308,
+    "info": #3b82f6
+);
+
+$dark: (
+    "primary": #818cf8,
+    "secondary": #6366f1,
+    "accent": #a78bfa,
+    "background": #0a0a0a,
+    "background-contrast": #fafafa,
+    "surface": #171717,
+    "surface-contrast": #e5e5e5,
+    "border": #262626,
+    "text": #e5e5e5,
+    "text-contrast": #0a0a0a,
+    "text-secondary": #a3a3a3,
+    "text-disabled": #525252
+);
+
+:root {
+    @each $key, $value in $default {
+        --#{$key}: #{to_rgba($value, 1)};
+    }
+}
+
+.dark {
+    @each $key, $value in $dark {
+        --#{$key}: #{to_rgba($value, 1)};
+    }
+}

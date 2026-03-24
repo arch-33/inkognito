@@ -1,0 +1,159 @@
+---
+import Base from "@/layouts/Base.astro";
+import { Image } from "astro:assets";
+import logoImg from "../../public/images/logo.png";
+---
+
+<Base title="Download – Inkognito" description="Download Inkognito for macOS, Windows, or Linux. Free and open-source.">
+
+  <!-- Header -->
+  <section class="relative pt-32 pb-16 md:pb-20 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-indigo-950/10 dark:from-indigo-950/20 to-transparent"></div>
+    <div class="relative container mx-auto px-4 text-center">
+      <div class="mb-6">
+        <Image src={logoImg} alt="Inkognito" class="w-80 h-80 mx-auto" width={320} height={320} />
+      </div>
+      <h1 class="text-4xl md:text-6xl font-bold text-text mb-5 tracking-tight">
+        Get Inkognito
+      </h1>
+      <p class="text-lg text-text-secondary max-w-2xl mx-auto">
+        Free, open-source, and available on all major platforms.
+      </p>
+    </div>
+  </section>
+
+  <!-- Download Cards -->
+  <section class="pb-20 md:pb-28">
+    <div class="container mx-auto px-4 max-w-5xl">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- macOS -->
+        <div class="download-card">
+          <div class="w-14 h-14 mx-auto mb-5 rounded-2xl bg-black/5 dark:bg-white/5 border border-border flex items-center justify-center">
+            <svg class="w-7 h-7 text-text-secondary" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-text mb-1">macOS</h3>
+          <p class="text-sm text-text-disabled mb-6">Apple Silicon & Intel</p>
+          <a href="https://github.com/arch-33/inkognito/releases/latest" target="_blank" rel="noopener" class="download-btn mb-3">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+            Download .dmg
+          </a>
+          <div class="pt-3 border-t border-border">
+            <p class="text-xs text-text-disabled mb-2">or via Homebrew:</p>
+            <code class="text-xs text-primary/80 bg-primary/5 border border-primary/10 px-3 py-1.5 rounded-lg inline-block font-mono">brew install --cask inkognito</code>
+          </div>
+        </div>
+
+        <!-- Windows -->
+        <div class="download-card">
+          <div class="w-14 h-14 mx-auto mb-5 rounded-2xl bg-black/5 dark:bg-white/5 border border-border flex items-center justify-center">
+            <svg class="w-7 h-7 text-text-secondary" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-text mb-1">Windows</h3>
+          <p class="text-sm text-text-disabled mb-6">Windows 10+</p>
+          <a href="https://github.com/arch-33/inkognito/releases/latest" target="_blank" rel="noopener" class="download-btn mb-3">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+            Download .msi
+          </a>
+          <a href="https://github.com/arch-33/inkognito/releases/latest" target="_blank" rel="noopener" class="text-xs text-primary hover:text-secondary transition-colors">
+            or download .exe
+          </a>
+        </div>
+
+        <!-- Linux -->
+        <div class="download-card">
+          <div class="w-14 h-14 mx-auto mb-5 rounded-2xl bg-black/5 dark:bg-white/5 border border-border flex items-center justify-center">
+            <svg class="w-7 h-7 text-text-secondary" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 00-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.368 1.884 1.43.868.07 1.662-.33 2.095-.88.46.067 1.045-.049 1.196-.29a.71.71 0 00.072-.4l-.006-.032c-.019-.135-.08-.285-.13-.44-.063-.2-.124-.38-.107-.493.044-.297-.005-.602-.09-.862a1.31 1.31 0 00-.084-.19c.089-.183.147-.377.147-.59 0-.062-.006-.122-.016-.18a.692.692 0 00-.024-.108.521.521 0 00-.04-.1c.077-.178.098-.372.046-.544-.092-.33-.363-.49-.638-.58-.147-.05-.312-.06-.452-.063a1.348 1.348 0 01-.217-.036c-.155-.036-.23-.07-.362-.117-.073-.025-.161-.054-.27-.094l-.005-.001c-.335-.117-.637-.318-.89-.548l-.025-.029a3.38 3.38 0 01-.226-.293c-.052-.07-.096-.13-.134-.181l-.009-.011c-.387-.538-.62-1.168-.628-1.806 0-.011-.002-.024-.003-.034a2.44 2.44 0 00-.004-.093c.006-.185.02-.358.04-.525a4.48 4.48 0 01.122-.638c.18-.735.5-1.33.864-1.874.382-.567.792-1.092 1.098-1.696.298-.584.52-1.262.453-2.11-.048-.629-.242-1.32-.65-2.068C17.58 3.129 15.273 0 12.504 0z"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-text mb-1">Linux</h3>
+          <p class="text-sm text-text-disabled mb-6">Ubuntu, Debian, Fedora & more</p>
+          <a href="https://github.com/arch-33/inkognito/releases/latest" target="_blank" rel="noopener" class="download-btn mb-3">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+            Download .deb
+          </a>
+          <a href="https://github.com/arch-33/inkognito/releases/latest" target="_blank" rel="noopener" class="text-xs text-primary hover:text-secondary transition-colors">
+            or download .AppImage
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Post-install -->
+  <section class="pb-20 md:pb-28">
+    <div class="container mx-auto px-4 max-w-3xl">
+      <h2 class="text-2xl font-bold text-text mb-8 text-center">Post-install notes</h2>
+
+      <div class="space-y-3">
+        <details class="install-accordion group">
+          <summary class="font-semibold text-text cursor-pointer flex items-center justify-between text-sm">
+            <span>macOS – "App is damaged" warning</span>
+            <svg class="w-4 h-4 text-text-disabled transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <div class="mt-4 text-sm text-text-secondary leading-relaxed">
+            <p class="mb-3">Since Inkognito is not yet notarized with Apple, macOS may block it on first launch. Run this once after installing:</p>
+            <code class="block bg-black/5 dark:bg-white/5 border border-border px-4 py-2.5 rounded-lg text-xs text-primary/80 font-mono">sudo xattr -dr com.apple.quarantine /Applications/Inkognito.app</code>
+          </div>
+        </details>
+
+        <details class="install-accordion group">
+          <summary class="font-semibold text-text cursor-pointer flex items-center justify-between text-sm">
+            <span>Windows – SmartScreen warning</span>
+            <svg class="w-4 h-4 text-text-disabled transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <div class="mt-4 text-sm text-text-secondary leading-relaxed">
+            <p>Windows may show a "Windows protected your PC" dialog. Click <strong class="text-text">More info</strong> then <strong class="text-text">Run anyway</strong>. This happens because the app is not code-signed yet.</p>
+          </div>
+        </details>
+
+        <details class="install-accordion group">
+          <summary class="font-semibold text-text cursor-pointer flex items-center justify-between text-sm">
+            <span>Linux – AppImage permissions</span>
+            <svg class="w-4 h-4 text-text-disabled transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <div class="mt-4 text-sm text-text-secondary leading-relaxed">
+            <p class="mb-3">After downloading the <code class="text-primary/80">.AppImage</code>, make it executable:</p>
+            <code class="block bg-black/5 dark:bg-white/5 border border-border px-4 py-2.5 rounded-lg text-xs text-primary/80 font-mono">chmod +x Inkognito_*.AppImage && ./Inkognito_*.AppImage</code>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tech Stack -->
+  <section class="py-16 md:py-20">
+    <div class="container mx-auto px-4 max-w-3xl text-center">
+      <p class="text-sm text-text-disabled uppercase tracking-widest mb-8">Built with</p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <span class="px-4 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-border text-sm text-text-secondary font-medium">Tauri 2</span>
+        <span class="px-4 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-border text-sm text-text-secondary font-medium">Rust</span>
+        <span class="px-4 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-border text-sm text-text-secondary font-medium">React 19</span>
+        <span class="px-4 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-border text-sm text-text-secondary font-medium">TypeScript</span>
+        <span class="px-4 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-border text-sm text-text-secondary font-medium">Tailwind CSS 4</span>
+        <span class="px-4 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-border text-sm text-text-secondary font-medium">CodeMirror 6</span>
+        <span class="px-4 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-border text-sm text-text-secondary font-medium">Zustand</span>
+      </div>
+      <div class="mt-8">
+        <a href="https://github.com/arch-33/inkognito" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-primary hover:text-secondary font-medium text-sm transition-colors group">
+          View source on GitHub
+          <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</Base>

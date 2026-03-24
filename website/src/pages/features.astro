@@ -1,0 +1,211 @@
+---
+import Base from "@/layouts/Base.astro";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<Base title="Features – Inkognito" description="Explore all the features that make Inkognito the most private notepad for your desktop.">
+
+  <!-- Header -->
+  <section class="relative pt-32 pb-16 md:pb-20 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-indigo-950/10 dark:from-indigo-950/20 to-transparent"></div>
+    <div class="relative container mx-auto px-4 text-center">
+      <p class="text-primary font-semibold text-sm uppercase tracking-widest mb-4">Features</p>
+      <h1 class="text-4xl md:text-6xl font-bold text-text mb-5 tracking-tight">
+        Everything you need.<br>
+        <span class="text-text-disabled">Nothing you don't.</span>
+      </h1>
+      <p class="text-lg text-text-secondary max-w-2xl mx-auto">
+        A carefully crafted set of features for private, beautiful writing.
+      </p>
+    </div>
+  </section>
+
+  <!-- Privacy First -->
+  <section class="pb-20 md:pb-28">
+    <div class="container mx-auto px-4 max-w-5xl">
+      <div class="mb-20">
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+            <svg class="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-text">Privacy First</h2>
+            <p class="text-sm text-text-disabled">Your data never leaves your machine</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="feature-section-card">
+            <h3 class="font-semibold text-text mb-2">Content Protection</h3>
+            <p class="text-sm text-text-secondary leading-relaxed">
+              One click hides your notes from screen capture, recordings, and screen sharing. Your content becomes invisible in screenshots and video calls.
+            </p>
+            <span class="inline-block mt-3 text-xs text-text-disabled font-mono">macOS & Windows</span>
+          </div>
+          <div class="feature-section-card">
+            <h3 class="font-semibold text-text mb-2">Auto-protect on minimize</h3>
+            <p class="text-sm text-text-secondary leading-relaxed">
+              Content protection activates automatically when you minimize the window. Step away with confidence.
+            </p>
+          </div>
+          <div class="feature-section-card">
+            <h3 class="font-semibold text-text mb-2">Zero cloud, zero telemetry</h3>
+            <p class="text-sm text-text-secondary leading-relaxed">
+              No accounts, no sync, no analytics. Your data never leaves your machine – not even anonymized metrics.
+            </p>
+          </div>
+          <div class="feature-section-card">
+            <h3 class="font-semibold text-text mb-2">Local storage</h3>
+            <p class="text-sm text-text-secondary leading-relaxed">
+              All notes are stored locally in a fast, reliable database. Fully portable – your data goes where you go.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Beautiful Writing -->
+      <div class="mb-20">
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
+            <svg class="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-text">Beautiful Writing</h2>
+            <p class="text-sm text-text-disabled">A distraction-free markdown experience</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="feature-section-card">
+            <h3 class="font-semibold text-text mb-2">Markdown editor</h3>
+            <p class="text-sm text-text-secondary leading-relaxed">
+              Powered by CodeMirror 6 with syntax highlighting, auto-save, and a distraction-free writing experience.
+            </p>
+          </div>
+          <div class="feature-section-card">
+            <h3 class="font-semibold text-text mb-2">Live preview</h3>
+            <p class="text-sm text-text-secondary leading-relaxed">
+              GitHub Flavored Markdown with code highlighting and Mermaid diagram support. See your content beautifully rendered.
+            </p>
+          </div>
+          <div class="feature-section-card">
+            <h3 class="font-semibold text-text mb-2">Customizable fonts</h3>
+            <p class="text-sm text-text-secondary leading-relaxed">
+              Choose from Berkeley Mono, JetBrains Mono, or Fira Code. Adjustable font size and ligature support included.
+            </p>
+          </div>
+          <div class="feature-section-card">
+            <h3 class="font-semibold text-text mb-2">Editor options</h3>
+            <p class="text-sm text-text-secondary leading-relaxed">
+              Line numbers, spell check, line wrap, and configurable auto-save interval. Tailor the editor to your style.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Organization -->
+      <div class="mb-20">
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+            <svg class="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-text">Organized Your Way</h2>
+            <p class="text-sm text-text-disabled">Find anything, anytime</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="feature-section-card">
+            <h3 class="font-semibold text-text mb-2">Daily notes</h3>
+            <p class="text-sm text-text-secondary leading-relaxed">
+              One note per day, always ready. Perfect for journaling, daily logs, or capturing fleeting thoughts.
+            </p>
+          </div>
+          <div class="feature-section-card">
+            <h3 class="font-semibold text-text mb-2">Mini calendar</h3>
+            <p class="text-sm text-text-secondary leading-relaxed">
+              Visual navigation across all your entries. Quickly jump to any date and see which days have notes at a glance.
+            </p>
+          </div>
+          <div class="feature-section-card">
+            <h3 class="font-semibold text-text mb-2">Tags & favorites</h3>
+            <p class="text-sm text-text-secondary leading-relaxed">
+              Flexible tagging with autocomplete and a favorites system for quick access to the notes that matter most.
+            </p>
+          </div>
+          <div class="feature-section-card">
+            <h3 class="font-semibold text-text mb-2">Quick navigation</h3>
+            <p class="text-sm text-text-secondary leading-relaxed">
+              Jump to any date with the mini calendar. See which days have notes at a glance and navigate your history effortlessly.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Thoughtful Details -->
+      <div>
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+            <svg class="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-text">Thoughtful Details</h2>
+            <p class="text-sm text-text-disabled">The little things that make a big difference</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="feature-section-card">
+            <h3 class="font-semibold text-text mb-2">Minimize to tray</h3>
+            <p class="text-sm text-text-secondary leading-relaxed">
+              Close the window and Inkognito keeps running quietly in your system tray. Always a click away.
+            </p>
+          </div>
+          <div class="feature-section-card">
+            <h3 class="font-semibold text-text mb-2">Always-on-top</h3>
+            <p class="text-sm text-text-secondary leading-relaxed">
+              Pin Inkognito above other apps as a floating window. Adjust window opacity to blend into your workflow.
+            </p>
+          </div>
+          <div class="feature-section-card">
+            <h3 class="font-semibold text-text mb-2">Custom shortcuts</h3>
+            <p class="text-sm text-text-secondary leading-relaxed">
+              Fully recordable, remappable keyboard shortcuts. Press the key combo you want and it's set.
+            </p>
+          </div>
+          <div class="feature-section-card">
+            <h3 class="font-semibold text-text mb-2">Dark & light themes</h3>
+            <p class="text-sm text-text-secondary leading-relaxed">
+              Automatic system theme detection or manual override. Launch at login so Inkognito is always within reach.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="relative py-24 md:py-32 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-t from-indigo-950/10 dark:from-indigo-950/30 via-transparent to-transparent"></div>
+    <div class="relative container mx-auto px-4 text-center">
+      <h2 class="text-3xl md:text-5xl font-bold text-text mb-4 tracking-tight">
+        Convinced?
+      </h2>
+      <p class="text-lg text-text-secondary mb-10">
+        Inkognito is free and open-source. Try it now.
+      </p>
+      <a href={`${base}/download`} class="group relative inline-flex items-center gap-2 px-10 py-4 rounded-full bg-black dark:bg-white text-white dark:text-black font-semibold text-base transition-all duration-300 hover:shadow-[0_0_60px_rgba(129,140,248,0.5)] hover:scale-105">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        Download Inkognito
+      </a>
+    </div>
+  </section>
+
+</Base>

@@ -1,0 +1,255 @@
+/* ==========================================================================
+   Landing Page — Modern styles
+   ========================================================================== */
+
+/* Aurora gradient background */
+.aurora-bg {
+  position: absolute;
+  inset: 0;
+  background: rgba(var(--background));
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 40% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 60% 30%, rgba(168, 85, 247, 0.06) 0%, transparent 40%);
+    animation: aurora-drift 20s ease-in-out infinite alternate;
+  }
+}
+
+.dark .aurora-bg::before {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 40% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 30%, rgba(168, 85, 247, 0.06) 0%, transparent 40%);
+}
+
+:root:not(.dark) .aurora-bg::before {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 40% 80%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 30%, rgba(168, 85, 247, 0.04) 0%, transparent 40%);
+}
+
+@keyframes aurora-drift {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(-2%, 1%) rotate(1deg); }
+  66% { transform: translate(1%, -1%) rotate(-0.5deg); }
+  100% { transform: translate(-1%, 2%) rotate(0.5deg); }
+}
+
+/* Grid overlay */
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(var(--text), 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--text), 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+}
+
+/* Hero gradient text */
+.hero-gradient-text {
+  background: linear-gradient(135deg, #818cf8 0%, #a78bfa 40%, #c084fc 70%, #818cf8 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 6s ease-in-out infinite;
+}
+
+:root:not(.dark) .hero-gradient-text {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 40%, #a855f7 70%, #6366f1 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 6s ease-in-out infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Hero bottom fade */
+.hero-bottom-fade {
+  background: linear-gradient(to top, rgba(var(--background)), transparent);
+}
+
+/* Screenshot wrapper hover */
+.screenshot-wrapper {
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* Bento Grid */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bento-card-lg {
+  grid-column: span 2;
+
+  @media (max-width: 768px) {
+    grid-column: span 1;
+  }
+}
+
+.bento-card {
+  position: relative;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+
+  /* Gradient border effect */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 1.25rem;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(var(--text), 0.1) 0%,
+      rgba(var(--text), 0.05) 50%,
+      rgba(var(--text), 0.1) 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+
+    &::before {
+      background: linear-gradient(
+        135deg,
+        rgba(129, 140, 248, 0.4) 0%,
+        rgba(167, 139, 250, 0.2) 50%,
+        rgba(129, 140, 248, 0.4) 100%
+      );
+    }
+  }
+}
+
+.bento-card-inner {
+  padding: 2rem;
+  background: rgba(var(--surface), 0.5);
+  backdrop-filter: blur(12px);
+  height: 100%;
+  border-radius: 1.25rem;
+}
+
+/* Scroll-triggered animations */
+@supports (animation-timeline: view()) {
+  .bento-card {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: scroll-reveal 0.6s ease-out forwards;
+    animation-timeline: view();
+    animation-range: entry 0% entry 30%;
+  }
+}
+
+@keyframes scroll-reveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Features page — feature section */
+.feature-section-card {
+  position: relative;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  background: rgba(var(--surface), 0.5);
+  border: 1px solid rgba(var(--border), 0.5);
+  padding: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+
+  &:hover {
+    border-color: rgba(var(--border), 1);
+    background: rgba(var(--surface), 0.8);
+    transform: translateY(-1px);
+  }
+}
+
+/* Download page cards */
+.download-card {
+  position: relative;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  background: rgba(var(--surface), 0.5);
+  border: 1px solid rgba(var(--border), 0.5);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+
+  &:hover {
+    border-color: rgba(var(--primary), 0.3);
+    background: rgba(var(--primary), 0.05);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(var(--primary), 0.15);
+  }
+}
+
+/* Download button */
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, rgba(var(--primary)), rgba(var(--secondary)));
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 8px 30px rgba(var(--primary), 0.4);
+    transform: translateY(-1px);
+  }
+}
+
+/* Details/accordion on download page */
+.install-accordion {
+  border-radius: 1rem;
+  overflow: hidden;
+  background: rgba(var(--surface), 0.5);
+  border: 1px solid rgba(var(--border), 0.5);
+  padding: 1.25rem 1.5rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: rgba(var(--border), 1);
+  }
+}
