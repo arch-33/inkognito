@@ -172,15 +172,18 @@ jobs:
             src-tauri/target
           key: ${{ runner.os }}-cargo-${{ matrix.rust_target }}-${{ hashFiles('src-tauri/Cargo.lock') }}
 
-      - name: Disable macOS code signing (no Apple Developer account)
-        if: runner.os == 'macOS'
-        run: |
-          echo "CSC_IDENTITY_AUTO_DISCOVERY=false" >> "$GITHUB_ENV"
-
       - name: Build and release
         uses: tauri-apps/tauri-action@v0.6.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # macOS code signing (Developer ID — direct / GitHub Release distribution)
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          # macOS notarization
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         with:
           tagName: ${{ needs.version.outputs.tag }}
           releaseName: "Inkognito ${{ needs.version.outputs.tag }}"
@@ -196,3 +199,171 @@ jobs:
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
+
+  # ─────────────────────────────────────────────────────────────────
+  # Job 3 — Build arm64, sign with Apple Distribution, upload to App Store
+  # ─────────────────────────────────────────────────────────────────
+  appstore:
+    runs-on: macos-latest
+    needs: [version, release]
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.version.outputs.tag }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Install frontend dependencies
+        run: pnpm install
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin
+
+      - name: Cache Cargo
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            src-tauri/target
+          key: macos-cargo-appstore-${{ hashFiles('src-tauri/Cargo.lock') }}
+
+      # ── Import Apple Distribution certificate into a temporary keychain ──
+      - name: Import Apple Distribution certificate
+        env:
+          APPSTORE_CERTIFICATE: ${{ secrets.APPSTORE_CERTIFICATE }}
+          APPSTORE_CERTIFICATE_PASSWORD: ${{ secrets.APPSTORE_CERTIFICATE_PASSWORD }}
+        run: |
+          echo "$APPSTORE_CERTIFICATE" | base64 --decode > /tmp/distribution.p12
+          security create-keychain -p actions build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p actions build.keychain
+          security set-keychain-settings -t 3600 -u build.keychain
+          security import /tmp/distribution.p12 -k build.keychain \
+            -P "$APPSTORE_CERTIFICATE_PASSWORD" \
+            -T /usr/bin/codesign -T /usr/bin/productbuild
+          security set-key-partition-list -S apple-tool:,apple:,codesign: \
+            -s -k actions build.keychain
+          rm /tmp/distribution.p12
+
+      - name: Import Installer certificate
+        env:
+          INSTALLER_CERTIFICATE: ${{ secrets.INSTALLER_CERTIFICATE }}
+          INSTALLER_CERTIFICATE_PASSWORD: ${{ secrets.INSTALLER_CERTIFICATE_PASSWORD }}
+        run: |
+          echo "$INSTALLER_CERTIFICATE" | base64 --decode > /tmp/installer.p12
+          security import /tmp/installer.p12 -k build.keychain \
+            -P "$INSTALLER_CERTIFICATE_PASSWORD" \
+            -T /usr/bin/codesign -T /usr/bin/productbuild
+          security set-key-partition-list -S apple-tool:,apple:,codesign: \
+            -s -k actions build.keychain
+          rm /tmp/installer.p12
+
+      - name: Install provisioning profile
+        env:
+          PROVISIONING_PROFILE: ${{ secrets.PROVISIONING_PROFILE }}
+        run: |
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "$PROVISIONING_PROFILE" | base64 --decode \
+            > ~/Library/MobileDevice/Provisioning\ Profiles/Inkognito.provisionprofile
+
+      # ── Build with Tauri (skip Tauri's codesigning — we sign manually below) ──
+      - name: Build app for App Store
+        env:
+          MACOSX_DEPLOYMENT_TARGET: "12.0"
+          # Do NOT set APPLE_SIGNING_IDENTITY here — Tauri would sign with
+          # Developer ID; we re-sign with Apple Distribution below.
+        run: |
+          pnpm tauri build --target aarch64-apple-darwin
+
+      # ── Sign for App Store (inside-out) ────────────────────────────
+      - name: Prepare and sign App Store bundle
+        env:
+          SIGNING_IDENTITY: "Apple Distribution: Mohamed Elbssir (UD29PDQT67)"
+        run: |
+          APP_PATH="src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Inkognito.app"
+
+          # Embed provisioning profile
+          cp ~/Library/MobileDevice/Provisioning\ Profiles/Inkognito.provisionprofile \
+            "$APP_PATH/Contents/embedded.provisionprofile"
+
+          # Strip quarantine attributes
+          xattr -cr "$APP_PATH"
+
+          # Sign frameworks & dylibs first (inside-out)
+          if [ -d "$APP_PATH/Contents/Frameworks" ]; then
+            find "$APP_PATH/Contents/Frameworks" -type f \( -name "*.dylib" -o -perm +111 \) | while read -r lib; do
+              codesign --force --options runtime \
+                --sign "$SIGNING_IDENTITY" "$lib"
+            done
+          fi
+
+          # Sign the main binary
+          codesign --force --options runtime \
+            --sign "$SIGNING_IDENTITY" \
+            --entitlements src-tauri/Entitlements.plist \
+            "$APP_PATH/Contents/MacOS/Inkognito"
+
+          # Sign the overall app bundle
+          codesign --force --options runtime \
+            --sign "$SIGNING_IDENTITY" \
+            --entitlements src-tauri/Entitlements.plist \
+            "$APP_PATH"
+
+          # Verify
+          codesign --verify --deep --strict "$APP_PATH"
+          echo "✅ App signed for App Store"
+
+      # ── Package as .pkg ────────────────────────────────────────────
+      - name: Create App Store .pkg
+        run: |
+          APP_PATH="src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Inkognito.app"
+          productbuild \
+            --component "$APP_PATH" /Applications \
+            --sign "3rd Party Mac Developer Installer: Mohamed Elbssir (UD29PDQT67)" \
+            Inkognito.pkg
+          echo "✅ .pkg created ($(du -h Inkognito.pkg | cut -f1))"
+
+      # ── Validate before uploading ──────────────────────────────────
+      - name: Validate .pkg with App Store Connect
+        run: |
+          xcrun altool --validate-app \
+            --type macos \
+            --file Inkognito.pkg \
+            --username "${{ secrets.APPLE_ID }}" \
+            --password "${{ secrets.APPLE_PASSWORD }}" \
+            --team-id "${{ secrets.APPLE_TEAM_ID }}"
+          echo "✅ Validation passed"
+
+      # ── Upload to App Store Connect ────────────────────────────────
+      - name: Upload to App Store Connect
+        run: |
+          xcrun altool --upload-app \
+            --type macos \
+            --file Inkognito.pkg \
+            --username "${{ secrets.APPLE_ID }}" \
+            --password "${{ secrets.APPLE_PASSWORD }}" \
+            --team-id "${{ secrets.APPLE_TEAM_ID }}"
+          echo "✅ Uploaded to App Store Connect"
+
+      # ── Attach .pkg to the GitHub Release ─────────────────────────
+      - name: Attach .pkg to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Inkognito.pkg
+          tag_name: ${{ needs.version.outputs.tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
